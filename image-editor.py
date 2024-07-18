@@ -42,10 +42,8 @@ def open_img():
     imagePath = x
     img = Image.open(x)
 
-    # Get the application window size
     max_width, max_height = rightFrame.winfo_width(), rightFrame.winfo_height()
 
-    # Resize the image to fit within the application window size
     img = resize_image(img, max_width, max_height)
     img = ImageTk.PhotoImage(img)
     clear_frame(rightFrame)
@@ -55,7 +53,7 @@ def open_img():
 
 # Main Window
 root = tk.Tk()
-root.geometry("800x600")  # Set a larger window size to accommodate images
+root.geometry("800x600")
 root.title("Image Editor")
 frame = tk.Frame(root)
 frame.pack(side="top", fill=tk.X)
