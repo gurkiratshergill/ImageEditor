@@ -1,8 +1,23 @@
 import tkinter as tk
 from PIL import ImageTk, Image
 from tkinter import filedialog
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 
+
+# Main Window
+root = tk.Tk()
+root.geometry("800x600")
+root.title("Image Editor")
+frame = tk.Frame(root)
+frame.pack(side="top", fill=tk.X)
+rightFrame = tk.Frame(root)
+rightFrame.pack(side="right", padx=10, pady=10, expand=True, fill=tk.BOTH)
+
+pickedOption = tk.StringVar()
+pickedOption.set('')
 imagePath = ''
+
 
 def clear_frame(frame):
     for widget in frame.winfo_children():
@@ -14,15 +29,18 @@ def openFile():
 def editImage():
     global imagePath
     if imagePath:
-        with Image.open(imagePath) as img:
-            blackAndWhite = img.convert('L')
-            max_width, max_height = rightFrame.winfo_width(), rightFrame.winfo_height()
-            blackAndWhite = resize_image(blackAndWhite, max_width, max_height)
-            blackAndWhite = ImageTk.PhotoImage(blackAndWhite)
-        clear_frame(rightFrame)
-        panel = tk.Label(rightFrame, image=blackAndWhite)
-        panel.image = blackAndWhite
-        panel.pack()
+        if(pickedOption.get() == "Greyscale"):
+            
+            with Image.open(imagePath) as img:
+                blackAndWhite = img.convert('L')
+                max_width, max_height = rightFrame.winfo_width(), rightFrame.winfo_height()
+                    
+                blackAndWhite = resize_image(blackAndWhite, max_width, max_height)
+                blackAndWhite = ImageTk.PhotoImage(blackAndWhite)
+            clear_frame(rightFrame)
+            panel = tk.Label(rightFrame, image=blackAndWhite)
+            panel.image = blackAndWhite
+            panel.pack()
 
 def openfn():
     filename = filedialog.askopenfilename(title='open')
@@ -51,18 +69,11 @@ def open_img():
     panel.image = img
     panel.pack()
 
-# Main Window
-root = tk.Tk()
-root.geometry("800x600")
-root.title("Image Editor")
-frame = tk.Frame(root)
-frame.pack(side="top", fill=tk.X)
-rightFrame = tk.Frame(root)
-rightFrame.pack(side="right", padx=10, pady=10, expand=True, fill=tk.BOTH)
+
 
 # Menu button for file opening
-fileBttn = tk.Menubutton(frame, text="File", bg="white")
-Menu1 = tk.Menu(fileBttn, tearoff=0)
+fileBttn = ttk.Menubutton(frame, text="File")
+Menu1 = ttk.Menu(fileBttn, tearoff=0)
 Menu1.add_command(label="Open file", command=open_img)
 fileBttn["menu"] = Menu1
 fileBttn.pack(padx=10, pady=10)
@@ -71,12 +82,12 @@ fileBttn.pack(padx=10, pady=10)
 leftFrame = tk.Frame(root)
 leftFrame.pack(side="left", fill=tk.Y)
 pickedOption = tk.StringVar()
-RadioButton = tk.Radiobutton(leftFrame, text="Black & White", variable=pickedOption)
+RadioButton = ttk.Radiobutton(leftFrame, text="Greyscale", variable=pickedOption,value="Greyscale")
 RadioButton.pack(padx=5, pady=5)
-applyButton = tk.Button(leftFrame, text="Apply", command=editImage, bg="white")
+applyButton = ttk.Button(leftFrame, text="Apply", command=editImage,)
 applyButton.pack(padx=5, pady=5)
 
-saveButton = tk.Button(leftFrame, text="Save Copy", bg="white")
+saveButton = ttk.Button(leftFrame, text="Save Copy",)
 saveButton.pack(padx=10, pady=10)
 
 # Application icon
