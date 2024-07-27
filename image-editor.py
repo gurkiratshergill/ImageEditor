@@ -17,6 +17,7 @@ rightFrame.pack(side="right", padx=10, pady=10, expand=True, fill=tk.BOTH)
 pickedOption = tk.StringVar()
 pickedOption.set('')
 imagePath = ''
+global edited_image
 
 
 def clear_frame(frame):
@@ -28,19 +29,27 @@ def openFile():
 
 def editImage():
     global imagePath
+    global edited_image
     if imagePath:
         if(pickedOption.get() == "Greyscale"):
             
             with Image.open(imagePath) as img:
                 blackAndWhite = img.convert('L')
-                max_width, max_height = rightFrame.winfo_width(), rightFrame.winfo_height()
-                    
+                max_width, max_height = rightFrame.winfo_width(), rightFrame.winfo_height()                   
                 blackAndWhite = resize_image(blackAndWhite, max_width, max_height)
+                edited_image = blackAndWhite
                 blackAndWhite = ImageTk.PhotoImage(blackAndWhite)
+                
             clear_frame(rightFrame)
             panel = tk.Label(rightFrame, image=blackAndWhite)
             panel.image = blackAndWhite
             panel.pack()
+            
+
+def saveImage():
+    global imagePath
+    global edited_image
+    edited_image.save("copy","JPEG")
 
 def openfn():
     filename = filedialog.askopenfilename(title='open')
@@ -87,7 +96,7 @@ RadioButton.pack(padx=5, pady=5)
 applyButton = ttk.Button(leftFrame, text="Apply", command=editImage,)
 applyButton.pack(padx=5, pady=5)
 
-saveButton = ttk.Button(leftFrame, text="Save Copy",)
+saveButton = ttk.Button(leftFrame, text="Save Copy", command=saveImage)
 saveButton.pack(padx=10, pady=10)
 
 # Application icon
