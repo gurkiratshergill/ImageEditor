@@ -1,0 +1,20 @@
+Tasks to Do
+
+1- Filters(same way the greyscale was done,but possible add them in a drop down?)
+    -Sepia
+    -Invert the colors/negative?
+    -Brightness/Contrast
+3- Rotate and Flip
+4- Image Overlays/Watermarks
+5- Undo/Redo Functionality
+6- Text Overlay
+7- Drawing on the image
+8- Ai image enchancement(OpenCV,Real-ESRGAN,rembg,GFPGAN libraries possibly?)
+
+
+Tasks Done
+
+Open and save image
+resize the image
+apply greyscale filter(possible opther fileter with it in future)
+Cropping functionality
