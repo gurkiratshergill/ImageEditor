@@ -101,38 +101,63 @@ def crop_image():
     global edited_image, start_x, start_y, end_x, end_y, history, img_display, crop_rectangle
     if edited_image:
         if start_x is not None and start_y is not None and end_x is not None and end_y is not None:
-            #Save the current image to history before cropping
+            # Save the current image to history before cropping
             history.append(edited_image.copy())
 
+            # Get the actual size of the image and canvas
             image_width, image_height = edited_image.size
-
             canvas_width, canvas_height = canvas.winfo_width(), canvas.winfo_height()
-            scale_x = image_width / canvas_width
-            scale_y = image_height / canvas_height
 
-            img_start_x = int(start_x * scale_x)
-            img_start_y = int(start_y * scale_y)
-            img_end_x = int(end_x * scale_x)
-            img_end_y = int(end_y * scale_y)
+            # Calculate aspect ratios
+            image_aspect = image_width / image_height
+            canvas_aspect = canvas_width / canvas_height
 
+            # Adjust for cases where the image doesn't fill the canvas due to aspect ratio
+            if canvas_aspect > image_aspect:
+                # Image is scaled based on height, adjust for width padding
+                scale = image_height / canvas_height
+                pad_x = (canvas_width - image_width / scale) / 2  # Calculate horizontal padding
+                img_start_x = int((start_x - pad_x) * scale)
+                img_start_y = int(start_y * scale)
+                img_end_x = int((end_x - pad_x) * scale)
+                img_end_y = int(end_y * scale)
+            else:
+                # Image is scaled based on width, adjust for height padding
+                scale = image_width / canvas_width
+                pad_y = (canvas_height - image_height / scale) / 2  # Calculate vertical padding
+                img_start_x = int(start_x * scale)
+                img_start_y = int((start_y - pad_y) * scale)
+                img_end_x = int(end_x * scale)
+                img_end_y = int((end_y - pad_y) * scale)
+
+            # Ensure coordinates are within image bounds
+            img_start_x = max(0, min(img_start_x, image_width))
+            img_start_y = max(0, min(img_start_y, image_height))
+            img_end_x = max(0, min(img_end_x, image_width))
+            img_end_y = max(0, min(img_end_y, image_height))
+
+            # Crop the image using the calculated coordinates
             cropped_image = edited_image.crop((img_start_x, img_start_y, img_end_x, img_end_y))
             edited_image = cropped_image
 
+            # Reset the crop coordinates and rectangle
             start_x = start_y = end_x = end_y = None
-
             if crop_rectangle is not None:
                 canvas.delete(crop_rectangle)
                 crop_rectangle = None
 
-            #Update the displayed image
+            # Update the displayed image
             max_width, max_height = rightFrame.winfo_width(), rightFrame.winfo_height()
             cropped_image = resize_image(cropped_image, max_width, max_height)
             img_display = ImageTk.PhotoImage(cropped_image)
 
+            # Update the canvas with the new image
             canvas.create_image(0, 0, anchor="nw", image=img_display)
             canvas.config(scrollregion=canvas.bbox(tk.ALL))
         else:
             print("Crop area not defined. Please draw a crop rectangle first.")
+
+
 
 
 # Undo the last crop operation
